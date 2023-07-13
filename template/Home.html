@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flask CRUD Aplication</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+</head>
+<body class="container">
+{% block content %}
+<div class="NavBar ">
+    <nav class="navbar sticky-top navbar-light bg-Light ">
+  <div class="container-fluid navbar navbar-dark bg-primary ">
+    <a class="navbar-brand "  href="#">Simple CURD Aplication Using Python Flask</a>
+  </div>
+</nav>
+</div>
+    <div class="d-flex justify-content-end m-2" >
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">+ Add</button>
+    </div>
+
+<div>
+        {% with messages=get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+    <div class="alert alert-success alert-dismissable" role="alert">
+        {{message}}
+        <button style="border:none;background:none" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close">
+            <span aria-hidden="true">x</span>
+        </button>
+
+    </div>
+
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+    </div>
+
+    <div class="dataTable">
+        <div>
+            <table class="table">
+  <thead class="table-dark">
+    <th>ID</th>
+  <th>Name</th>
+  <th>Maths</th>
+  <th>Physics</th>
+  <th>Chemistry</th>
+  <th>Action</th>
+
+  </thead>
+
+   {% for student in students %}
+
+  <tr>
+  <td>{{student.0}}</td>
+  <td>{{student.1}}</td>
+  <td>{{student.2}}</td>
+  <td>{{student.3}}</td>
+  <td>{{student.4}}</td>
+  <td>
+      <a href="/update/{{student.0}}" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editmodal{{student.0}}">Edit</a>
+      <a href="/delete/{{student.0}}" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletemodal{{student.0}}">Delete</a>
+  </td>
+  </tr>
+
+
+<!-----------------------------------------Edit Model------------------------------------------->
+<div class="modal fade" id="editmodal{{student.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editmodallabel">Modal title {{student.0}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{url_for('update')}}" method="POST" name="form">
+            <input type="hidden" value="{{student.0}}" name="id"/>
+            <input class="form-control " type="text"  aria-label="Student Name" placeholder="Student Name" name="stname" value="{{student.1}}" required>
+            <input class="form-control mt-2" type="text" aria-label="Maths Marks" placeholder="Maths Marks" name="stmaths" value="{{student.2}}" required>
+            <input class="form-control mt-2" type="text" aria-label="Physics Marks" placeholder="Physics Marks" name="stphysics" value="{{student.3}}" required>
+            <input class="form-control mt-2" type="text"  aria-label="Chemistry Marks" placeholder="Chemistry Marks" name="stChemistry" value="{{student.4}}" required>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<!-----------------------------------------Delete Model------------------------------------------->
+<div class="modal fade" id="deletemodal{{student.0}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+<!--        <h5 class="modal-title" id="deletemodallabel">Delete</h5>-->
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h4>Are You Delete ?</h4>
+      </div>
+      <div class="modal-footer">
+        <form action="{{url_for('delete',id=student.0)}}" method="POST" name="form">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="submit" class="btn btn-primary">Yes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+   {% endfor %}
+
+
+</table>
+        </div>
+    </div>
+
+<!-----------------------------------------ADD Model------------------------------------------->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Insert Data</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{url_for('insert')}}" method="POST" >
+            <input class="form-control " type="text"  aria-label="Student Name" placeholder="Student Name" name="stname" required>
+            <input class="form-control mt-2" type="text" aria-label="Maths Marks" placeholder="Maths Marks" name="stmaths" required>
+            <input class="form-control mt-2" type="text" aria-label="Physics Marks" placeholder="Physics Marks" name="stphysics" required>
+            <input class="form-control mt-2" type="text"  aria-label="Chemistry Marks" placeholder="Chemistry Marks" name="stChemistry" required>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary"/>
+      </div>
+        </form>
+          </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+</body>
+{% endblock content %}
+</html>
